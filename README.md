@@ -3,6 +3,9 @@ Animates elements inside a {{> Animate}} block, by removing and adding an `anima
 Requires at least Meteor version 0.8.3-rc5
 <!-- Demo: http://templatesession2demo.meteor.com -->
 
+This package uses the new UI_hooks, allowing for animation when elements get add AND removed.
+
+
 Installation
 ============
 

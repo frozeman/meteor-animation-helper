@@ -53,9 +53,8 @@ Template['Animate'].rendered = function(){
                     $node = null;
                 });
 
-            // otherwise remve immedediately
+            // otherwise remove immedediately
             } else {
-                console.log("remove immediatly");
                 $node.remove();
                 $node = null;
             }

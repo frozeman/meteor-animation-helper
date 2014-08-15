@@ -3,7 +3,7 @@
   "description": "Animates elements inside a {{> Animate}} block, by removing and adding an `animate` class.",
   "homepage": "https://github.com/frozeman/meteor-animation-helper",
   "author": "Fabian Vogelsteller (http://frozeman.de)",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "git": "https://github.com/frozeman/meteor-animation-helper.git",
   "packages": {}
 }

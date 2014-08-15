@@ -45,10 +45,9 @@ Template['Animate'].rendered = function(){
             var $node = $(node),
                 indexOfElement = _.indexOf(animationElements, node);
 
-            if(indexOfElement !== -1) {
+            if(document.hasFocus() && indexOfElement !== -1) {
                 // remove from animation elements array
                 delete animationElements[indexOfElement];
-
                 $node.addClass('animate').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
                     $node.remove();
                     $node = null;
@@ -56,6 +55,7 @@ Template['Animate'].rendered = function(){
 
             // otherwise remve immedediately
             } else {
+                console.log("remove immediatly");
                 $node.remove();
                 $node = null;
             }

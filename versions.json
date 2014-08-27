@@ -53,10 +53,6 @@
       "1.0.0"
     ],
     [
-      "sewdn:velocityjs",
-      "0.8.0"
-    ],
-    [
       "templating",
       "1.0.4"
     ],

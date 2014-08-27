@@ -13,7 +13,7 @@ Package.onUse(function (api) {
     api.use('templating', 'client');
     api.use('jquery', 'client');
 
-    api.use('sewdn:velocityjs', 'client');
+    api.use('sewdn:velocityjs@0.8.0', 'client');
 
     // FILES
     api.addFiles('animation-helper.html', 'client');
@@ -23,8 +23,6 @@ Package.onUse(function (api) {
 
 
 Package.onTest(function (api) {
-
-    api.use('animation-helper');
-    api.use('tinytest');
-
+    // api.use('mrt:animation-helper');
+    // api.use('tinytest');
 });

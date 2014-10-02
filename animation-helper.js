@@ -17,13 +17,11 @@ Template['Animate'].rendered = function(){
 
     });
 
-
     // add the parentNode te the instance, so we can access it in the destroyed function
-    this._animation_helper_parentNode = this.firstNode.parentNode;
+    this._animation_helper_firstNode = this.firstNode;
 
-    this._animation_helper_parentNode._uihooks = {
+    this._animation_helper_firstNode.parentNode._uihooks = {
         insertElement: function (node, next) {
-
             var $node = $(node);
 
             $node.insertBefore(next);
@@ -41,7 +39,6 @@ Template['Animate'].rendered = function(){
 
         },
         removeElement: function (node) {
-
             var $node = $(node),
                 indexOfElement = _.indexOf(animationElements, node);
 
@@ -68,9 +65,10 @@ Template['Animate'].rendered = function(){
 The destroyed method, which remove the hooks to make sure, they work again next time.
 
 */
-Template['Animate'].destroyed = function(){
-    var template = this;
-    Meteor.defer(function(){
-        template._animation_helper_parentNode._uihooks = null;
-    });
-};
+// Template['Animate'].destroyed = function(){
+//     var template = this;
+//     // Meteor.defer(function(){
+//         template._animation_helper_firstNode.parentNode._uihooks = null;
+//     // });
+
+// };

@@ -6,7 +6,7 @@ This package uses the new UI_hooks, allowing for animation when elements get add
 Installation
 ============
 
-    $ meteor add mrt:animation-helper
+    $ meteor add frozeman:animation-helper
 
 Usage
 =====

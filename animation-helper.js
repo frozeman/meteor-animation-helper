@@ -17,6 +17,7 @@ Template['Animate'].rendered = function(){
 
     });
 
+
     // add the parentNode te the instance, so we can access it in the destroyed function
     this._animation_helper_firstNode = this.firstNode;
 
@@ -42,7 +43,7 @@ Template['Animate'].rendered = function(){
             var $node = $(node),
                 indexOfElement = _.indexOf(animationElements, node);
 
-            if(document.hasFocus() && indexOfElement !== -1) {
+            if(indexOfElement !== -1) {
                 // remove from animation elements array
                 delete animationElements[indexOfElement];
                 $node.addClass('animate').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {

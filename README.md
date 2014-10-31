@@ -16,18 +16,18 @@ Wrap the templates or template parts with the {{#Animate}}..{{/Animate}} helper.
 The `animate` class will then be added back, before Meteor wants to remove those elements and waits until the specified `transition-duration` of the class has finished before removing them:
 
 	{{#Animate}}
-		<div class="myblock animate">
+		<div class="my-element animate">
 			...
 		</div>
 	{{/Animate}}
 
 	// to animate this element on add/remove add some CSS transitions:
 
-	.myBlock {
+	.my-element {
 		opacity: 1; // value after the animate class got removed
 		transition: opacity 200ms;
 	}
-	.myBlock.animate {
+	.my-element.animate {
 		opacity: 0; // initial value
 	}
 

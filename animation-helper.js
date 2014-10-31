@@ -8,13 +8,13 @@ Aniamtion-Helper
 Template['Animate'].rendered = function(){
     var animationElements = this.findAll('.animate');
 
+
     // HACK: initial animation rendered, as insertElement, doesn't seem to fire
     _.each(animationElements, function(item){
         var $item = $(item);
 
         $item.width(); // force-draw before animation
         $item.removeClass('animate');
-
     });
 
 
@@ -44,12 +44,29 @@ Template['Animate'].rendered = function(){
                 indexOfElement = _.indexOf(animationElements, node);
 
             if(indexOfElement !== -1) {
+                
+                // add timeout in case the element wasn't removed
+                var timeoutId;
+                if(Meteor.isClient) {
+                    timeoutId = Meteor.setTimeout(function(){
+                        $node.remove();
+                        $node = null;
+                    }, 5000);
+                }
+
                 // remove from animation elements array
                 delete animationElements[indexOfElement];
-                $node.addClass('animate').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
-                    $node.remove();
-                    $node = null;
+                $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd', function(e) {
+                    if (e.target === node) {
+                        $(this).off(e);
+
+                        Meteor.clearTimeout(timeoutId);
+                        $node.remove();
+                        $node = null;
+                    }
+
                 });
+                $node.addClass('animate').width();
 
             // otherwise remove immedediately
             } else {

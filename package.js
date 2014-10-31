@@ -1,12 +1,12 @@
 Package.describe({
     name: "frozeman:animation-helper",
     summary: "Animates elements inside a {{> Animate}} block, by removing and adding an `animate` class.",
-    version: "0.2.0",
+    version: "0.2.1",
     git: "https://github.com/frozeman/meteor-animation-helper.git"
 });
 
 Package.onUse(function (api) {
-    api.versionsFrom('METEOR@0.9.3');
+    api.versionsFrom('METEOR@01.0');
 
     // core
     api.use('underscore', 'client');

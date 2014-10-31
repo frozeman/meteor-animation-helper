@@ -30,3 +30,17 @@ The `animate` class will then be added back, before Meteor wants to remove those
 	.myBlock.animate {
 		opacity: 0; // initial value
 	}
+
+
+**Note**: When you have template helpers in the same class of the element you want to animate, Meteor will reset the all classes when the helper re-runs and therefore put the animate class back!
+In this case its better to put the animating element around the element with the helper:
+
+If you have this:
+
+    <div class="my-element animate {{someHelper}}">...</div>
+
+Do something like this:
+
+    <div class="animate">
+    	<div class="my-element {{someHelper}}">...</div>
+	</div>

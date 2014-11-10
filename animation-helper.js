@@ -5,13 +5,34 @@ Aniamtion-Helper
 **/
 
 
+/**
+Check if the animation element has a animation set
+
+@method checkForError
+@return {Boolean} true, when an error was detected
+*/
+var checkForError = function($node){
+
+    if($node.css('transition') === 'all 0s ease 0s' && $node.css('animation') === 'none 0s ease 0s 1 normal none running') {
+        console.warn('animation-helper error: The following element has no transition defined, but an "animate" class:', $node[0]);
+        return true;
+    } else
+        return false;
+};
+
+
 Template['Animate'].rendered = function(){
-    var animationElements = this.findAll('.animate');
+    var template = this;
+    template._animationElements = this.findAll('.animate');
 
 
     // HACK: initial animation rendered, as insertElement, doesn't seem to fire
-    _.each(animationElements, function(item){
+    _.each(template._animationElements, function(item){
         var $item = $(item);
+
+        // check if the element has a transition
+        if(checkForError($item))
+            return;
 
         $item.width(); // force-draw before animation
         $item.removeClass('animate');
@@ -19,17 +40,20 @@ Template['Animate'].rendered = function(){
 
 
     // add the parentNode te the instance, so we can access it in the destroyed function
-    this._animation_helper_firstNode = this.firstNode;
+    template._animation_helper_parentNode = this.firstNode.parentNode;
 
-    this._animation_helper_firstNode.parentNode._uihooks = {
+    template._animation_helper_parentNode._uihooks = {
         insertElement: function (node, next) {
             var $node = $(node);
 
             $node.insertBefore(next);
 
-            if($node.hasClass('animate')) {
+            if($node.hasClass('animate') && !checkForError($node)) {
+
                 // add to animation elements array
-                animationElements.push(node);
+                if(!_.contains(template._animationElements, node))
+                    template._animationElements.push(node);
+
 
                 // animate
                 $node.width(); // force-draw before animation
@@ -41,9 +65,9 @@ Template['Animate'].rendered = function(){
         },
         removeElement: function (node) {
             var $node = $(node),
-                indexOfElement = _.indexOf(animationElements, node);
+                indexOfElement = _.indexOf(template._animationElements, node);
 
-            if(indexOfElement !== -1) {
+            if(indexOfElement !== -1) { //&& !$node.hasClass('animate')
                 
                 // add timeout in case the element wasn't removed
                 var timeoutId;
@@ -55,8 +79,8 @@ Template['Animate'].rendered = function(){
                 }
 
                 // remove from animation elements array
-                delete animationElements[indexOfElement];
-                $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd', function(e) {
+                // delete template._animationElements[indexOfElement];
+                $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
                     if (e.target === node) {
                         $(this).off(e);
 
@@ -76,6 +100,11 @@ Template['Animate'].rendered = function(){
 
         }
     };
+};
+
+Template['Animate'].destroyed = function(){
+    if(Meteor.isClient && this._animation_helper_parentNode)
+        this._animation_helper_parentNode._uihooks = null;
 };
 
 

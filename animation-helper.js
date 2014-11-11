@@ -26,7 +26,7 @@ Template['Animate'].rendered = function(){
     template._animationElements = this.findAll('.animate');
 
 
-    // HACK: initial animation rendered, as insertElement, doesn't seem to fire
+    // HACK: initial animation rendered, as insertElement, doesn't fire as the rendered callback happended after the first insert
     _.each(template._animationElements, function(item){
         var $item = $(item);
 
@@ -36,6 +36,13 @@ Template['Animate'].rendered = function(){
 
         $item.width(); // force-draw before animation
         $item.removeClass('animate');
+
+        $item.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
+            if (e.target === item) {
+                $item.off(e);
+                item._animationHelperIsVisible = true;
+            }
+        });
     });
 
 
@@ -48,6 +55,8 @@ Template['Animate'].rendered = function(){
 
             $node.insertBefore(next);
 
+            // console.log('inserted', node, node._animationHelperIsVisible);
+
             if($node.hasClass('animate') && !checkForError($node)) {
 
                 // add to animation elements array
@@ -57,8 +66,13 @@ Template['Animate'].rendered = function(){
 
                 // animate
                 $node.width(); // force-draw before animation
-                Meteor.defer(function(){
-                    $node.removeClass('animate');
+                $node.removeClass('animate');
+
+                $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
+                    if (e.target === node) {
+                        $node.off(e);
+                        node._animationHelperIsVisible = true;
+                    }
                 });
             }
 
@@ -67,7 +81,9 @@ Template['Animate'].rendered = function(){
             var $node = $(node),
                 indexOfElement = _.indexOf(template._animationElements, node);
 
-            if(indexOfElement !== -1) { //&& !$node.hasClass('animate')
+            // console.log('removed',node, node._animationHelperIsVisible);
+
+            if(indexOfElement !== -1 && node._animationHelperIsVisible) { //&& !$node.hasClass('animate')
                 
                 // add timeout in case the element wasn't removed
                 var timeoutId;
@@ -82,9 +98,11 @@ Template['Animate'].rendered = function(){
                 // delete template._animationElements[indexOfElement];
                 $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
                     if (e.target === node) {
-                        $(this).off(e);
+                        $node.off(e);
 
                         Meteor.clearTimeout(timeoutId);
+
+                        delete node._animationHelperIsVisible;
                         $node.remove();
                         $node = null;
                     }

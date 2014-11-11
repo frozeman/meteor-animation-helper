@@ -23,11 +23,11 @@ var checkForError = function($node){
 
 Template['Animate'].rendered = function(){
     var template = this;
-    template._animationElements = this.findAll('.animate');
+    // template._animation_helper_animationElements = this.findAll('.animate');
 
 
     // HACK: initial animation rendered, as insertElement, doesn't fire as the rendered callback happended after the first insert
-    _.each(template._animationElements, function(item){
+    _.each(this.findAll('.animate'), function(item){
         var $item = $(item);
 
         // check if the element has a transition
@@ -37,10 +37,12 @@ Template['Animate'].rendered = function(){
         $item.width(); // force-draw before animation
         $item.removeClass('animate');
 
+        console.log('rendered', item, item._animation_helper_isVisible);
+
         $item.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
             if (e.target === item) {
                 $item.off(e);
-                item._animationHelperIsVisible = true;
+                item._animation_helper_isVisible = true;
             }
         });
     });
@@ -55,13 +57,15 @@ Template['Animate'].rendered = function(){
 
             $node.insertBefore(next);
 
-            // console.log('inserted', node, node._animationHelperIsVisible);
+            console.log('inserted', node, node._animation_helper_isVisible);
 
             if($node.hasClass('animate') && !checkForError($node)) {
 
+
+
                 // add to animation elements array
-                if(!_.contains(template._animationElements, node))
-                    template._animationElements.push(node);
+                // if(!_.contains(template._animation_helper_animationElements, node))
+                //     template._animation_helper_animationElements.push(node);
 
 
                 // animate
@@ -71,19 +75,19 @@ Template['Animate'].rendered = function(){
                 $node.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
                     if (e.target === node) {
                         $node.off(e);
-                        node._animationHelperIsVisible = true;
+                        node._animation_helper_isVisible = true;
                     }
                 });
             }
 
         },
         removeElement: function (node) {
-            var $node = $(node),
-                indexOfElement = _.indexOf(template._animationElements, node);
+            var $node = $(node);
+                // indexOfElement = _.indexOf(template._animation_helper_animationElements, node);
 
-            // console.log('removed',node, node._animationHelperIsVisible);
+            console.log('removed',node, node._animation_helper_isVisible);
 
-            if(indexOfElement !== -1 && node._animationHelperIsVisible) { //&& !$node.hasClass('animate')
+            if(node._animation_helper_isVisible) { //&& !$node.hasClass('animate') //indexOfElement !== -1 && 
                 
                 // add timeout in case the element wasn't removed
                 var timeoutId;
@@ -102,7 +106,7 @@ Template['Animate'].rendered = function(){
 
                         Meteor.clearTimeout(timeoutId);
 
-                        delete node._animationHelperIsVisible;
+                        delete node._animation_helper_isVisible;
                         $node.remove();
                         $node = null;
                     }
@@ -121,8 +125,13 @@ Template['Animate'].rendered = function(){
 };
 
 Template['Animate'].destroyed = function(){
-    if(Meteor.isClient && this._animation_helper_parentNode)
-        this._animation_helper_parentNode._uihooks = null;
+    var template = this;
+
+    if(Meteor.isClient && template._animation_helper_parentNode) {
+        Tracker.afterFlush(function(){
+            template._animation_helper_parentNode._uihooks = null;
+        });
+    }
 };
 
 

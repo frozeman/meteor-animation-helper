@@ -37,7 +37,7 @@ Template['Animate'].rendered = function(){
         $item.width(); // force-draw before animation
         $item.removeClass('animate');
 
-        console.log('rendered', item, item._animation_helper_isVisible);
+        // console.log('rendered', item, item._animation_helper_isVisible);
 
         $item.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd transitionEnd msTransitionEnd animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd animationEnd msAnimationEnd', function(e) {
             if (e.target === item) {
@@ -57,7 +57,7 @@ Template['Animate'].rendered = function(){
 
             $node.insertBefore(next);
 
-            console.log('inserted', node, node._animation_helper_isVisible);
+            // console.log('inserted', node, node._animation_helper_isVisible);
 
             if($node.hasClass('animate') && !checkForError($node)) {
 
@@ -85,7 +85,7 @@ Template['Animate'].rendered = function(){
             var $node = $(node);
                 // indexOfElement = _.indexOf(template._animation_helper_animationElements, node);
 
-            console.log('removed',node, node._animation_helper_isVisible);
+            // console.log('removed',node, node._animation_helper_isVisible);
 
             if(node._animation_helper_isVisible) { //&& !$node.hasClass('animate') //indexOfElement !== -1 && 
                 
